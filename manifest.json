@@ -1,0 +1,21 @@
+{
+  "manifest_version": 2,
+  "name": "Keyword Blocker",
+  "description": "This extension blocks websites based on keywords.",
+  "version": "1.0",
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "permissions": [
+    "webRequest",
+    "webRequestBlocking",
+    "*://*/*",
+    "browserAction"
+  ],
+  "browser_action": {
+    "default_popup": "panel.html"
+  },
+  "icons": {
+    "128": "favicon.png"
+  }
+}
