@@ -4,18 +4,26 @@
   "description": "This extension blocks websites based on keywords.",
   "version": "1.0",
   "background": {
-    "scripts": ["background.js"]
+    "scripts": ["backgroundTest.js"]
   },
   "permissions": [
     "webRequest",
     "webRequestBlocking",
     "*://*/*",
-    "browserAction"
+    "browserAction",
+    "options_ui",
+    "contextMenus"
   ],
+  "options_page": "option-panel.html",
   "browser_action": {
     "default_popup": "drop-down-panel.html"
   },
   "icons": {
     "128": "favicon.png"
-  }
+  },
+  "content_scripts":[{
+    "matches":["<all_urls>"],
+    "js":["content-script.js"]
+    
+  }]
 }

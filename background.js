@@ -1,7 +1,13 @@
 // Listen for form submission
+// Listen for button click
+console.log("extension enabled!");
+
+
 document.getElementById("form").addEventListener("submit", e => {
     // Prevent the form from submitting
-    e.preventDefault();
+    console.log("submit detacted");
+    alert("submit detacted");
+    // e.preventDefault();
   
     // Get the blocklist and keywords from the form
     const blocklist = document.getElementById("blocklist").value;
