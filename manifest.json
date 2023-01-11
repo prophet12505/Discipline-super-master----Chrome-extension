@@ -12,7 +12,8 @@
     "*://*/*",
     "browserAction",
     "options_ui",
-    "contextMenus"
+    "contextMenus",
+    "storage"
   ],
   "options_page": "option-panel.html",
   "browser_action": {
@@ -25,5 +26,6 @@
     "matches":["<all_urls>"],
     "js":["content-script.js"]
     
-  }]
+  }],
+  "content_security_policy": "script-src 'self' 'unsafe-inline'"
 }

@@ -2,7 +2,6 @@
 // Listen for button click
 console.log("extension enabled!");
 
-
 document.getElementById("form").addEventListener("submit", e => {
     // Prevent the form from submitting
     console.log("submit detacted");

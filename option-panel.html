@@ -4,17 +4,47 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline'">
     <title>Option Panel</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script> -->
 </head>
 <body>
-    <form id="form">
+    <div class="container">
+    <h2>Basic settings section</h2>
+    <div class="custom-control custom-switch">
+        <input type="checkbox" class="form-check-input" id="general-block-switch" >
+        <label class="custom-control-label" for="customSwitch1">block switch</label>
+    </div>
+
+
+
+
+    <h2>Block list and key words section</h2>
+    <form id="form" class="form-group">
         <label for="blocklist">Blocklist:</label><br>
-        <textarea id="blocklist" name="blocklist"></textarea><br>
+        <input type="text"  class="form-control" id="input-blocklist" name="blocklist"></input><br>
+        <button class="btn btn-primary bg-secondary" id="add-blocklist-btn">Add to block list</button>
+        <ul id="inject-blocklist" class="list-group">
+            <li>this is a block list</li>
+        </ul>
         <br>
         <label for="keywords">Keywords:</label><br>
-        <textarea id="keywords" name="keywords"></textarea><br>
+        <input type="text"  class="form-control" id="input-keywords" name="keywords"></input><br>
+        <button class="btn btn-primary bg-secondary" id="add-keyword-btn">Add keyword</button>
         <br>
-        <input type="submit" value="Save">
-      </form>
+        <button type="submit" class="btn btn-primary bg-success" >save</button>
+        <button class="btn btn-primary">export</button>
+        <button class="btn btn-primary">inport</button>
+    </form>
+
+    <h2>supervelience section</h2>
+
+    
+    <div id="blocklists">
+
+    </div>
+    </div>
+    <script src="./option-panel.js"></script>
 </body>
 </html>

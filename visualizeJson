@@ -1,0 +1,14 @@
+[
+    {
+        "duration":"January 9-13",
+        "topic":"Topic 1: Typography",
+        "activities":["course intro","type history"," anatomy","rules"]
+
+    },{
+        "duration":"January 16-20",
+        "topic":"Topic 1: Typography"
+    },{
+        "duration":"January 23-27",
+        "topic":"Topic 2: Layout"
+    }
+]
