@@ -4,9 +4,9 @@ var checkbox = document.getElementById("general-block-switch");
 const addBlocklistButton=document.getElementById("add-blocklist-btn");
 const addKeywordButton=document.getElementById("add-keyword-btn");
 const inputBlockList=document.getElementById("input-blocklist");
+const inputKeywords=document.getElementById("input-keywords");
 const injectBlockList=document.getElementById("inject-blocklist");
-//could not select them yet because they are not rendered yet
-const blockUrlDeletes=document.querySelectorAll(".block-url-delete");
+const injectKeywords=document.getElementById("inject-keywords");
 
 // update the panel to sync with chrome Storage
 // chrome.runtime.onMessage.addListener(
@@ -29,7 +29,7 @@ window.onload = async function() {
         })
         
         //console.log(response);
-    console.log(blockUrlDeletes);
+    // console.log(blockUrlDeletes);
   }
 
 addBlocklistButton.addEventListener("click",async ()=>{
@@ -37,6 +37,13 @@ addBlocklistButton.addEventListener("click",async ()=>{
         {
             type: "ADD_BLOCK_LIST",
             payload:inputBlockList.value
+        })
+})
+addKeywordButton.addEventListener("click",async ()=>{
+    const response= await chrome.runtime.sendMessage(
+        {
+            type: "ADD_KEYWORD",
+            payload:inputKeywords.value
         })
 })
 async function deleteBlockUrl(index){
@@ -47,14 +54,15 @@ async function deleteBlockUrl(index){
         });
     console.log("DELETE BLOCK URL");
 }
-
-for(let i = 0; i < blockUrlDeletes.length; i++){
-    
-    blockUrlDeletes[i].addEventListener("click", function(e) {
-        console.log("delete:"+i);
-        deleteBlockUrl(i);
-      });
+async function deleteBlockKeyword(index){
+    const response= await chrome.runtime.sendMessage(
+        {
+            type: "DELETE_KEYWORD",
+            payload:index
+        });
+        console.log("DELETE_KEYWORD");
 }
+
 
   chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
@@ -65,13 +73,31 @@ for(let i = 0; i < blockUrlDeletes.length; i++){
                 settingsObject=request.payload;
 
 
-                //set up panel
+                //set up panel(render the component)
                 checkbox.checked=settingsObject.generalBlockSwitch;
                 injectBlockList.innerHTML=settingsObject.blockedUrls.map((url,index)=>{
-                    return "<li class='list-group-item'>"+url+"<button id='block-url-delete-"+index+"' class='btn btn-primary bg-warning block-url-delete'>delete</button></li>";
+                    return "<li class='list-group-item url-row'><p>"+url+"</p><button id='block-url-delete-"+index+"' class='btn btn-warning block-url-delete'>delete</button></li>";
+                
                 });
-               
-
+                //manipulate the dom to add the listener as well
+                const blockUrlDeletes=document.querySelectorAll(".block-url-delete");
+                for(let i = 0; i < blockUrlDeletes.length; i++){
+                    blockUrlDeletes[i].addEventListener("click", function(e) {
+                        console.log("delete:"+i);
+                        deleteBlockUrl(i);
+                    });
+                }
+                
+                injectKeywords.innerHTML=settingsObject.keywords.map((keyword,index)=>{
+                    return "<li class='list-group-item url-row'><p>"+keyword+"</p><button id='block-keyword-delete-"+index+"' class='btn btn-warning block-keyword-delete'>delete</button></li>";
+                });
+                const blockKeywordDeletes=document.querySelectorAll(".block-keyword-delete");
+                for(let i=0;i<blockKeywordDeletes.length;i++){
+                    blockKeywordDeletes[i].addEventListener("click",(e)=>{
+                        console.log("delete:"+blockKeywordDeletes[i]);
+                        deleteBlockKeyword(i);
+                    })
+                }
                 console.log(settingsObject);
                 break;
             }
@@ -104,15 +130,7 @@ checkbox.addEventListener("click", async function() {
     }
 });
 
-// document.getElementById("blocklists").innerHTML=blocklists.map((blocklist)=>{
-//     return <>
-//     <ul>
-//         <li>
-//             {blocklist}
-//         </li>
-//     </ul>
-//     </>
-// });
+
 
 // document.getElementById("form").onclick=()=>{
 //     chrome.runtime.sendMessage({
