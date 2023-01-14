@@ -1,4 +1,10 @@
+p{
+    padding: 0;
+    padding-left: 10px;
+    margin: 0;
+}
 .url-row{
+    padding: 0;
     display: flex;
     justify-content: space-between;
 }

@@ -7,19 +7,15 @@ const inputBlockList=document.getElementById("input-blocklist");
 const inputKeywords=document.getElementById("input-keywords");
 const injectBlockList=document.getElementById("inject-blocklist");
 const injectKeywords=document.getElementById("inject-keywords");
+const exportBlocklist=document.getElementById("export-blocklist");
+const inportBlocklist=document.getElementById('inport-blocklist');
+const exportKeywords=document.getElementById('export-keywords');
+const inportKeywords=document.getElementById('inport-keywords')
+const fileInputBlockList = document.getElementById("fileInput-blocklist");
+const fileInputKeywords = document.getElementById("fileInput-keywords");
 
-// update the panel to sync with chrome Storage
-// chrome.runtime.onMessage.addListener(
-//     function(request, sender, sendResponse) {
-//         const { blockedUrls,
-//             keywords ,
-//             generalBlockSwitch}=request;
-//         checkbox.checked=generalBlockSwitch;
-//     }
-
-// );
 let settingsObject={};
-
+let inputedArray=[];
 
 window.onload = async function() {
     
@@ -46,6 +42,83 @@ addKeywordButton.addEventListener("click",async ()=>{
             payload:inputKeywords.value
         })
 })
+exportBlocklist.addEventListener("click",async ()=>{
+    console.log("export-blocklist!");
+    const csv = settingsObject.blockedUrls.join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+
+// Create a link element to allow the user to download the CSV file
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "blocklist.csv";
+    // Add the link element to the document
+    document.body.appendChild(link);
+
+    // Click the link to download the CSV file
+    link.click();
+
+    // Remove the link element from the document
+    document.body.removeChild(link);
+});
+exportKeywords.addEventListener("click",async ()=>{
+    const csv = settingsObject.keywords.join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+
+// Create a link element to allow the user to download the CSV file
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "keywords.csv";
+    // Add the link element to the document
+    document.body.appendChild(link);
+
+    // Click the link to download the CSV file
+    link.click();
+    // Remove the link element from the document
+    document.body.removeChild(link);
+})
+inportBlocklist.addEventListener("click", async (e)=>{
+    e.preventDefault();
+    fileInputBlockList.click();
+});
+inportKeywords.addEventListener("click", async (e)=>{
+    e.preventDefault();
+    fileInputKeywords.click();
+});
+
+fileInputBlockList.addEventListener("change", function(event) {
+    
+
+    // Add an event listener to the FileReader's 'onload' event
+    
+        const inputedFile = event.target.files[0];
+        // files[0].split("\\n");
+        const reader=new FileReader();
+        
+        reader.addEventListener('load', function() {
+            console.log("reader loaded");
+            inputedArray = reader.result.split("\n");
+            console.log(inputedArray);
+            settingsObject.blockedUrls=inputedArray;
+            chrome.runtime.sendMessage({type:"UPDATE_SETTINGS",payload:settingsObject});
+        });
+        reader.readAsText(inputedFile);// trigger load
+})
+fileInputKeywords.addEventListener("change", function(event) {
+    // Add an event listener to the FileReader's 'onload' event
+        const inputedFile = event.target.files[0];
+        // files[0].split("\\n");
+        const reader=new FileReader();
+        
+        reader.addEventListener('load', function() {
+            console.log("reader loaded");
+            inputedArray = reader.result.split("\n");
+            console.log(inputedArray);
+            settingsObject.keywords=inputedArray;
+            chrome.runtime.sendMessage({type:"UPDATE_SETTINGS",payload:settingsObject});
+        });
+        reader.readAsText(inputedFile);// trigger load
+})
+
 async function deleteBlockUrl(index){
     const response= await chrome.runtime.sendMessage(
         {
@@ -66,7 +139,8 @@ async function deleteBlockKeyword(index){
 
   chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
-        
+    console.log("request received!");
+    console.log(request.type);
         switch(request.type){
             case "RETURN_ALL_STORAGE_INFORMATION":{
                 console.log("settingsObject");
@@ -78,7 +152,7 @@ async function deleteBlockKeyword(index){
                 injectBlockList.innerHTML=settingsObject.blockedUrls.map((url,index)=>{
                     return "<li class='list-group-item url-row'><p>"+url+"</p><button id='block-url-delete-"+index+"' class='btn btn-warning block-url-delete'>delete</button></li>";
                 
-                });
+                }).join(" ");   
                 //manipulate the dom to add the listener as well
                 const blockUrlDeletes=document.querySelectorAll(".block-url-delete");
                 for(let i = 0; i < blockUrlDeletes.length; i++){
@@ -90,7 +164,7 @@ async function deleteBlockKeyword(index){
                 
                 injectKeywords.innerHTML=settingsObject.keywords.map((keyword,index)=>{
                     return "<li class='list-group-item url-row'><p>"+keyword+"</p><button id='block-keyword-delete-"+index+"' class='btn btn-warning block-keyword-delete'>delete</button></li>";
-                });
+                }).join(" ");
                 const blockKeywordDeletes=document.querySelectorAll(".block-keyword-delete");
                 for(let i=0;i<blockKeywordDeletes.length;i++){
                     blockKeywordDeletes[i].addEventListener("click",(e)=>{
