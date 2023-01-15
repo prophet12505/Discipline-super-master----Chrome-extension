@@ -24,6 +24,18 @@
         <input type="text" class="form-text-input" id="input-redirect-url" >
         <label class="custom-control-label" for="customSwitch1">Redirect URL</label>
         <button class="btn btn-success" id="confirm-redirect-url">Save</button>
+        <div class="row">
+            <div class="col-md-6">
+                <label for="input-rest-delay">Seconds to wait before unlocking control panel & rest</label>
+                <input type="number" class="form-number-input" id="input-rest-delay" name="input-rest-delay"
+                min="0" max="300">
+            </div>
+            <div class="col-md-6">
+                <label for="input-rest-delay">Maxium rest time(minutes)</label>
+                <input type="number" class="form-number-input" id="input-rest-delay" name="input-rest"
+                min="3" max="60">
+            </div>
+        </div>
     <hr>
 
 
@@ -76,7 +88,7 @@
         
     </form>
     <hr>
-    <h2>supervelience section</h2>
+    <h2>Surpervision section</h2>
 
     
     <div id="blocklists">

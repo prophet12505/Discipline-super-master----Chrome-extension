@@ -12,6 +12,8 @@ settingsObject.whiteListMode=false;
 settingsObject.allowedUrlsByDefault=
 [
     'google.com',
+    "www.google.com/",
+    "https://www.google.com/",
     chrome.runtime.getURL('option-panel.html'),
     chrome.runtime.getURL('option-panel.js'),
     chrome.runtime.getURL('option-panel.css'),
@@ -24,6 +26,7 @@ settingsObject.allowedUrlsByDefault=
     "127.0.0.1"
 ];
 settingsObject.redirectUrl="google.com";
+settingsObject.waitTimeBeforeUnlock=0;
 chrome.storage.sync.get(settingsObject, items => {
     settingsObject.blockedUrls = items.blockedUrls;
     settingsObject.keywords = items.keywords;
@@ -31,6 +34,7 @@ chrome.storage.sync.get(settingsObject, items => {
     settingsObject.whiteListMode=items.whiteListMode;
     settingsObject.allowedUrlsByDefault=items.allowedUrlsByDefault;
     settingsObject.redirectUrl=items.redirectUrl;
+    settingsObject.waitTimeBeforeUnlock=items.waitTimeBeforeUnlock;
 }
 );
 

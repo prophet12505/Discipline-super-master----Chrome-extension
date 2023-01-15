@@ -17,43 +17,67 @@ const fileInputKeywords = document.getElementById("fileInput-keywords");
 const labelBlockList=document.getElementById("label-blocklist");
 const inputRedirectUrl=document.getElementById("input-redirect-url");
 const confirmRedirectUrl=document.getElementById("confirm-redirect-url");
+const inputRestDelay= document.getElementById("input-rest-delay");
+
 let settingsObject={};
 let inputedArray=[];
-
+function isURL(str) {
+    var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+    '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+    '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+    '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+    return pattern.test(str);
+}
 window.onload = async function() {
     
     const response= await chrome.runtime.sendMessage(
         {
             type: "GET_ALL_STORAGE_INFORMATION"
         })
-        
-        //console.log(response);
-    // console.log(blockUrlDeletes);
+
   }
   confirmRedirectUrl.addEventListener("click", async ()=>{
-    settingsObject.redirectUrl=inputRedirectUrl.value;
+    //settingsObject.redirectUrl=inputRedirectUrl.value;
     //not function correctly
-
-    if(settingsObject.blockedUrls.some(url=>settingsObject.redirectUrl.startsWith(url))){
-        alert("Can not redirect page that is in blocked url!");
-    }
-    else{
-        alert("Change redirect url successfully");
-        updateSettings();
-    }
+   
+        if(settingsObject.blockedUrls.some(url=>inputRedirectUrl.value.startsWith(url))){
+            alert("Can not redirect page that is in blocked url!");
+        }
+        
+        else{
+            alert("Change redirect url successfully");
+            settingsObject.redirectUrl=inputRedirectUrl.value;
+            updateSettings();
+        }
     
+    
+    
+  });
+  inputRestDelay.addEventListener("change",async ()=>{
+    settingsObject.waitTimeBeforeUnlock=inputRestDelay.value;
+    updateSettings();
   })
 addBlocklistButton.addEventListener("click",async ()=>{
-    if(settingsObject.blockedUrls.some(url=>inputBlockList.value===url)){
-        alert("url already exists!");
+    const inputURL=inputBlockList.value.replace(/^(https?:\/\/)?(www\.)?/, "");
+    console.log("inputURL:"+inputURL);
+    if(isURL(inputURL)){
+        if(settingsObject.blockedUrls.some(url=>inputURL===url)){
+            alert("url already exists!");
+        }
+        else{
+            const response= await chrome.runtime.sendMessage(
+                {
+                    type: "ADD_BLOCK_LIST",
+                    payload:inputURL
+                })
+        }
     }
     else{
-        const response= await chrome.runtime.sendMessage(
-            {
-                type: "ADD_BLOCK_LIST",
-                payload:inputBlockList.value
-            })
+        alert("please input legal url!!!");
     }
+    
    
 })
 addKeywordButton.addEventListener("click",async ()=>{
@@ -174,6 +198,7 @@ async function deleteBlockKeyword(index){
                 labelBlockList.innerHTML= settingsObject.whiteListMode?"Whitelist":"Blocklist";
                 addBlocklistButton.innerHTML= settingsObject.whiteListMode?"Add to whiteList":"Add to blocklist";
                 inputRedirectUrl.value=settingsObject.redirectUrl;
+                inputRestDelay.value=settingsObject.waitTimeBeforeUnlock;
                 injectBlockList.innerHTML=settingsObject.blockedUrls.map((url,index)=>{
                     return "<li class='list-group-item url-row'><p>"+url+"</p><button id='block-url-delete-"+index+"' class='btn btn-warning block-url-delete'>Delete</button></li>";
                 

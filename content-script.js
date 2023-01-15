@@ -26,7 +26,7 @@ window.onload=async ()=>{
         }
     }
     function urlDetect(settingsObject){
-        let currentUrl = window.location.pathname;
+        let currentUrl = document.URL.replace(/^(https?:\/\/)?(www\.)?/, "");
         console.log(currentUrl); // "/path"
         if(settingsObject.generalBlockSwitch){
 
@@ -36,9 +36,9 @@ window.onload=async ()=>{
                 if (settingsObject.blockedUrls.some(url => currentUrl.startsWith(url))) {
                     //if it's not in the allowed list
                     if (!settingsObject.allowedUrlsByDefault.some(url => currentUrl.startsWith(url))){
-                        console.log("blocked url is detacted!");
+                        alert("blocked url is detacted!");
                         let fullPath = settingsObject.redirectUrl;
-                         window.location.replace(fullPath);
+                        window.location.replace(fullPath);
                     }
                 }
             }
