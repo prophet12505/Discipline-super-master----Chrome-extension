@@ -1,6 +1,7 @@
 
 console.log("option-panel launched!");
 var checkbox = document.getElementById("general-block-switch");
+var whiteListSwitch=document.getElementById("whitelist-switch");
 const addBlocklistButton=document.getElementById("add-blocklist-btn");
 const addKeywordButton=document.getElementById("add-keyword-btn");
 const inputBlockList=document.getElementById("input-blocklist");
@@ -13,7 +14,9 @@ const exportKeywords=document.getElementById('export-keywords');
 const inportKeywords=document.getElementById('inport-keywords')
 const fileInputBlockList = document.getElementById("fileInput-blocklist");
 const fileInputKeywords = document.getElementById("fileInput-keywords");
-
+const labelBlockList=document.getElementById("label-blocklist");
+const inputRedirectUrl=document.getElementById("input-redirect-url");
+const confirmRedirectUrl=document.getElementById("confirm-redirect-url");
 let settingsObject={};
 let inputedArray=[];
 
@@ -27,13 +30,31 @@ window.onload = async function() {
         //console.log(response);
     // console.log(blockUrlDeletes);
   }
+  confirmRedirectUrl.addEventListener("click", async ()=>{
+    settingsObject.redirectUrl=inputRedirectUrl.value;
+    //not function correctly
 
+    if(settingsObject.blockedUrls.some(url=>settingsObject.redirectUrl.startsWith(url))){
+        alert("Can not redirect page that is in blocked url!");
+    }
+    else{
+        alert("Change redirect url successfully");
+        updateSettings();
+    }
+    
+  })
 addBlocklistButton.addEventListener("click",async ()=>{
-    const response= await chrome.runtime.sendMessage(
-        {
-            type: "ADD_BLOCK_LIST",
-            payload:inputBlockList.value
-        })
+    if(settingsObject.blockedUrls.some(url=>inputBlockList.value===url)){
+        alert("url already exists!");
+    }
+    else{
+        const response= await chrome.runtime.sendMessage(
+            {
+                type: "ADD_BLOCK_LIST",
+                payload:inputBlockList.value
+            })
+    }
+   
 })
 addKeywordButton.addEventListener("click",async ()=>{
     const response= await chrome.runtime.sendMessage(
@@ -149,8 +170,12 @@ async function deleteBlockKeyword(index){
 
                 //set up panel(render the component)
                 checkbox.checked=settingsObject.generalBlockSwitch;
+                whiteListSwitch.checked=settingsObject.whiteListMode;
+                labelBlockList.innerHTML= settingsObject.whiteListMode?"Whitelist":"Blocklist";
+                addBlocklistButton.innerHTML= settingsObject.whiteListMode?"Add to whiteList":"Add to blocklist";
+                inputRedirectUrl.value=settingsObject.redirectUrl;
                 injectBlockList.innerHTML=settingsObject.blockedUrls.map((url,index)=>{
-                    return "<li class='list-group-item url-row'><p>"+url+"</p><button id='block-url-delete-"+index+"' class='btn btn-warning block-url-delete'>delete</button></li>";
+                    return "<li class='list-group-item url-row'><p>"+url+"</p><button id='block-url-delete-"+index+"' class='btn btn-warning block-url-delete'>Delete</button></li>";
                 
                 }).join(" ");   
                 //manipulate the dom to add the listener as well
@@ -163,7 +188,7 @@ async function deleteBlockKeyword(index){
                 }
                 
                 injectKeywords.innerHTML=settingsObject.keywords.map((keyword,index)=>{
-                    return "<li class='list-group-item url-row'><p>"+keyword+"</p><button id='block-keyword-delete-"+index+"' class='btn btn-warning block-keyword-delete'>delete</button></li>";
+                    return "<li class='list-group-item url-row'><p>"+keyword+"</p><button id='block-keyword-delete-"+index+"' class='btn btn-warning block-keyword-delete'>Delete</button></li>";
                 }).join(" ");
                 const blockKeywordDeletes=document.querySelectorAll(".block-keyword-delete");
                 for(let i=0;i<blockKeywordDeletes.length;i++){
@@ -203,8 +228,21 @@ checkbox.addEventListener("click", async function() {
         //console.log(response);
     }
 });
+async function updateSettings(){
+    console.log("UPDATE_SETTINGS");
+    console.log(settingsObject);
+    const response = await chrome.runtime.sendMessage(
+        {
+            type: "UPDATE_SETTINGS",
+            payload:settingsObject
+        });
+}
 
-
+whiteListSwitch.addEventListener("click", async ()=>{
+  
+    settingsObject.whiteListMode=!settingsObject.whiteListMode;
+    updateSettings();
+});
 
 // document.getElementById("form").onclick=()=>{
 //     chrome.runtime.sendMessage({
