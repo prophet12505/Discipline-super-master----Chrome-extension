@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Discipline Super Master",
-  "description": "Get more done with this flexible Chrome extension!Block distracting websites by URL, keyword, set wake-up times, export/import settings..",
+  "description": "Get more done with flexible extension!Block distracting websites by URL, keyword, set wake-up times, export/import settings..",
   "version": "1.0",
   "background": {
     "scripts": ["backgroundTest.js"]
