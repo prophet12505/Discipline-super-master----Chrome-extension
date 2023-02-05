@@ -36,7 +36,6 @@ window.onload = async function() {
         {
             type: "GET_ALL_STORAGE_INFORMATION"
         })
-
   }
   confirmRedirectUrl.addEventListener("click", async ()=>{
     //settingsObject.redirectUrl=inputRedirectUrl.value;

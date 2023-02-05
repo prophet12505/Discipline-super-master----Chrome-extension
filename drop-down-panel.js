@@ -47,7 +47,7 @@ document.getElementById("settings-button").addEventListener("click", () => {
     if (countdown > 0) {
       document.getElementById("settings-button").innerHTML = "Please wait until: "+countdown+" seconds";
     }
-    if (countdown === 0) {
+    if (countdown <= 0) {
         
         document.getElementById("settings-button").innerHTML = "Time's Up! Open control panel!";
         clearInterval(intervalId);
@@ -55,6 +55,7 @@ document.getElementById("settings-button").addEventListener("click", () => {
 }
 function setupTimer(waitTimeBeforeUnlock){
   countdown=waitTimeBeforeUnlock;
+  
   optionIsClickable=false;
   
   //updateCountdownTimer()
@@ -71,13 +72,13 @@ function setupTimer(waitTimeBeforeUnlock){
   }
   chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
-    console.log("request received!");
-    console.log(request.type);
+    //console.log("request received!");
+    //console.log(request.type);
         switch(request.type){
             case "RETURN_ALL_STORAGE_INFORMATION":{
               settingsObject=request.payload;
               //  countdown=waitTimeBeforeUnlock;
-              console.log(settingsObject);
+              //console.log(settingsObject);
               if(!settingsObject.generalBlockSwitch){
                 document.getElementById("open-switch-button").style.display="block";
               }
