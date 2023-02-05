@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Discipline Super Master",
-  "description": "Unleash your full productivity potential with the BlockSite Chrome Extension - the ultimate tool for customizing and streamlining your browsing experience. With features like URL blocking, keyword blocking, flexible wake-up time settings, and the ability to export/import your blocked websites, BlockSite gives you the flexibility and customization you need to stay focused and on track. Say goodbye to distracting websites and take control of your online time with BlockSite.",
+  "description": "Get more done with BlockSite--the flexible Chrome extension! Block distracting websites by URL, keyword, set wake-up times, export/import settings. Stay focused.",
   "version": "1.0",
   "background": {
     "scripts": ["backgroundTest.js"]
